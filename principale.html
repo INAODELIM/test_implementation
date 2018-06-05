@@ -97,14 +97,15 @@ View conception and test
                                             layers: [
                                                 new ol.layer.Tile({
                                                     source: new ol.source.GeoportalWMTS({
-                                                        layer: "CADASTRALPARCELS.PARCELS"
+                                                        layer: "CADASTRALPARCELS.PARCELS",
+                                                        style:"bdparcellaire"
                                                     }),
                                                     opacity: 0.7
                                                 })
                                             ],
                                             view: new ol.View({
                                                center: [288074.8449901076, 6247982.515792289],
-                                                zoom: 6
+                                                zoom: 5
                                                 
                                             })
                                         });
