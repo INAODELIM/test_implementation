@@ -92,23 +92,76 @@ View conception and test
                                 <div id="map" class="map"></div>
                                 <script>
                                     function go() {
+                                       
+                                        
+                                        var projection = new ol.proj.Projection({
+                                            code: 'EPSG:2154',
+                                            extent: [-378305.81, 6093283.21, 1212610.74, 7186901.68],
+                                            units: 'm'
+                                        }); // definition du EPSG 2154
+                                        ol.proj.addProjection(projection); //inclusion du EPSG dans openlayer
+                                        var resolutions = [];
+                                        var matrixIds = [];
+                                        var proj2154 = ol.proj.get('EPSG:2154'); //recupération de la projection
+                                        //alert(proj2154.getExtent());
+                                        var projectionExtent = proj2154.getExtent(); //recupération de l'étendu de la projection 
+                                        var maxResolution = ol.extent.getWidth(proj2154.getExtent()) / 256; //recupérationd des résolutions
+
+                                        for (var i = 0; i < 15; i++) {
+                                            matrixIds[i] = "EPSG:2154:" + i.toString();
+                                            resolutions[i] = maxResolution / Math.pow(2, i);
+                                        }
+
+                                        var tileGrid = new ol.tilegrid.WMTS({
+                                            //origin: [-20037508, 20037508],
+                                            
+                                            origin: ol.extent.getTopLeft(projectionExtent),
+
+                                            resolutions: resolutions,
+                                            matrixIds: matrixIds
+                                        });
+                                        var languedoc_source = new ol.source.WMTS({
+                                            url: 'http://localhost:8080/geoserver/gwc/service/wmts',
+                                            layer: 'test:languedoc_100',
+                                            matrixSet: 'EPSG:2154',
+                                            format: 'image/png',
+                                             projection: "EPSG:2154",
+                                            tileGrid: tileGrid,
+                                            style: 'polygon'
+
+
+                                        });
+                                        var lang = new ol.layer.Tile({
+                                             projection: "EPSG:3857",
+                                            source: languedoc_source
+                                        });
+
+
                                         var map = new ol.Map({
+                                            projection: "EPSG:2154",
                                             target: 'map',
                                             layers: [
                                                 new ol.layer.Tile({
                                                     source: new ol.source.GeoportalWMTS({
                                                         layer: "CADASTRALPARCELS.PARCELS",
-                                                        style:"bdparcellaire"
+                                                        //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.NIVEAUXGRIS.L93",
+                                                        
+                                                        style: "normal",
+                                                        
                                                     }),
                                                     opacity: 0.7
                                                 })
                                             ],
                                             view: new ol.View({
-                                               center: [288074.8449901076, 6247982.515792289],
-                                                zoom: 5
-                                                
+                                                center: [600000, 6750000],
+                                                //center: [288074.8449901076, 6247982.515792289],
+                                                projection : "EPSG:2154",
+                                                zoom: 7
+
                                             })
                                         });
+
+                                        map.addLayer(lang);
                                     }
 
                                     Gp.Services.getConfig({
