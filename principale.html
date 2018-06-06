@@ -92,8 +92,8 @@ View conception and test
                                 <div id="map" class="map"></div>
                                 <script>
                                     function go() {
-                                       
-                                        
+
+
                                         var projection = new ol.proj.Projection({
                                             code: 'EPSG:2154',
                                             extent: [-378305.81, 6093283.21, 1212610.74, 7186901.68],
@@ -113,8 +113,6 @@ View conception and test
                                         }
 
                                         var tileGrid = new ol.tilegrid.WMTS({
-                                            //origin: [-20037508, 20037508],
-                                            
                                             origin: ol.extent.getTopLeft(projectionExtent),
 
                                             resolutions: resolutions,
@@ -125,43 +123,37 @@ View conception and test
                                             layer: 'test:languedoc_100',
                                             matrixSet: 'EPSG:2154',
                                             format: 'image/png',
-                                             projection: "EPSG:2154",
+                                            projection: "EPSG:2154",
                                             tileGrid: tileGrid,
                                             style: 'polygon'
-
-
                                         });
                                         var lang = new ol.layer.Tile({
-                                             projection: "EPSG:3857",
+                                            //projection: "EPSG:3857",
                                             source: languedoc_source
                                         });
-
-
                                         var map = new ol.Map({
-                                            projection: "EPSG:2154",
+                                          
                                             target: 'map',
                                             layers: [
                                                 new ol.layer.Tile({
                                                     source: new ol.source.GeoportalWMTS({
                                                         layer: "CADASTRALPARCELS.PARCELS",
                                                         //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.NIVEAUXGRIS.L93 ",
-                                                        
+
                                                         style: "normal",
-                                                        
+
                                                     }),
                                                     opacity: 0.7
                                                 })
                                             ],
                                             view: new ol.View({
-                                                center: [600000, 6750000],
-                                                //center: [288074.8449901076, 6247982.515792289],
-                                                projection : "EPSG:2154",
-                                                zoom: 7
-
+                                                projection: "EPSG:2154",
+                                                center: [690294.769471,6206792.476654 ],
+                                                //center: [320729.77, 5305952.76], //coordonnées en 3857                                             
+                                                zoom: 5.5
                                             })
                                         });
-
-                                        map.addLayer(lang);
+                                        map.addLayer(lang); //ajout du layer languedoc à la carte
                                     }
 
                                     Gp.Services.getConfig({
