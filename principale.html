@@ -96,7 +96,7 @@ View conception and test
 
                                         var projection = new ol.proj.Projection({
                                             code: 'EPSG:2154',
-                                            extent: [-378305.81, 6093283.21, 1212610.74, 7186901.68],
+                                            extent: [-378305.8099675195, 6008151.219241469, 1320649.5712336518, 7235612.7247730335],
                                             units: 'm'
                                         }); // definition du EPSG 2154
                                         ol.proj.addProjection(projection); //inclusion du EPSG dans openlayer
@@ -109,51 +109,55 @@ View conception and test
 
                                         for (var i = 0; i < 15; i++) {
                                             matrixIds[i] = "EPSG:2154:" + i.toString();
-                                            resolutions[i] = maxResolution / Math.pow(2, i);
+                                            resolutions[i] = (maxResolution) / Math.pow(2, i);
+                                           
                                         }
-
+                                       
                                         var tileGrid = new ol.tilegrid.WMTS({
                                             origin: ol.extent.getTopLeft(projectionExtent),
-
+                                          // origin:[-378300, 7235610],
                                             resolutions: resolutions,
                                             matrixIds: matrixIds
                                         });
+                                        
                                         var languedoc_source = new ol.source.WMTS({
                                             url: 'http://localhost:8080/geoserver/gwc/service/wmts',
-                                            layer: 'test:languedoc_100',
+                                            layer: 'test:languedoc',
                                             matrixSet: 'EPSG:2154',
                                             format: 'image/png',
                                             projection: "EPSG:2154",
+                                            TILED:true,
                                             tileGrid: tileGrid,
                                             style: 'polygon'
                                         });
                                         var lang = new ol.layer.Tile({
-                                            //projection: "EPSG:3857",
-                                            source: languedoc_source
+                                            projection: "EPSG:2154",
+                                            source: languedoc_source,
+                                            transparent: true
+                                        });
+                                        var coucheIGN = new ol.layer.Tile({
+                                            source: new ol.source.GeoportalWMTS({
+                                                projection: "EPSG:2154",
+                                                layer: "CADASTRALPARCELS.PARCELS",
+                                                //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.NIVEAUXGRIS.L93 ",
+                                                style: "normal",
+
+                                            }),
+                                               
+                                            opacity: 0.8
                                         });
                                         var map = new ol.Map({
-                                          
+
                                             target: 'map',
-                                            layers: [
-                                                new ol.layer.Tile({
-                                                    source: new ol.source.GeoportalWMTS({
-                                                        layer: "CADASTRALPARCELS.PARCELS",
-                                                        //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.NIVEAUXGRIS.L93 ",
-
-                                                        style: "normal",
-
-                                                    }),
-                                                    opacity: 0.7
-                                                })
-                                            ],
+                                            layers: [coucheIGN,lang],
                                             view: new ol.View({
-                                                projection: "EPSG:2154",
-                                                center: [690294.769471,6206792.476654 ],
-                                                //center: [320729.77, 5305952.76], //coordonnées en 3857                                             
-                                                zoom: 5.5
+                                                projection: "EPSG:3857",
+                                                //center: [690294.769471, 6206792.476654],
+                                                center: [320729.77, 5305952.76], //coordonnées en 3857   
+                                                zoom: 7
                                             })
                                         });
-                                        map.addLayer(lang); //ajout du layer languedoc à la carte
+                                       // map.addLayer(lang); //ajout du layer languedoc à la carte
                                     }
 
                                     Gp.Services.getConfig({
