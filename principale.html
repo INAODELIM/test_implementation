@@ -31,7 +31,7 @@ View conception and test
         <style>
             .map{
 
-                //height:40%;
+                height:100%;
             }
         </style>
 
@@ -43,7 +43,7 @@ View conception and test
         <script src="assets/js/ol.js" type="text/javascript"></script>
 
         <!-- Geoportail OpenLayerExtension JS -->
-        <script data-url="assets/autoconf.json"  src='assets/js/GpPluginOpenLayers.js' type="text/javascript"></script>
+        <script  data-url="assets/autoconf.json" src='assets/js/GpPluginOpenLayers.js' type="text/javascript"></script>
 
     </head>
 
@@ -107,14 +107,7 @@ View conception and test
 
                                         var variable = 22;
                                         var resolutions = new Array(variable);
-                                        /* resolutions[0] = 104579.2245498940;
-                                         resolutions[1] = 52277.5323537905;
-                                         resolutions[2] = 26135.4870785954;
-                                         resolutions[3] = 13066.8913818000;
-                                         resolutions[4] = 6533.2286041135;
-                                         resolutions[5] = 3266.5595244627;
-                                         resolutions[6] = 1633.2660045974;
-                                         resolutions[7] = 816.6295549860;*/
+                                       
 
                                         var matrixIds = new Array(variable);
 
@@ -150,16 +143,19 @@ View conception and test
 
 
                                         });
+                                       
                                         var lang = new ol.layer.Tile({
                                             opacity: 0.7,
-                                            source: languedoc_source
+                                            source: languedoc_source,
+                                             
 
                                         });
+
                                         var coucheIGN = new ol.layer.Tile({
                                             source: new ol.source.GeoportalWMTS({
                                                 projection: "EPSG:2154",
-                                                // layer: "CADASTRALPARCELS.PARCELS",
-                                                layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.ROUTIER.L93",
+                                                layer: "CADASTRALPARCELS.PARCELS",
+                                                //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.ROUTIER.L93",
                                                 style: "normal",
 
                                             }),
@@ -167,20 +163,15 @@ View conception and test
                                             opacity: 0.8
                                         });
                                         var map = new ol.Map({
-                                            controls: ol.control.defaults({
-                                                attributionOptions: {
-                                                    collapsible: false
-                                                }
-                                            }).extend([
-                                                scaleLineControl
-                                            ]),
+
                                             target: 'map',
                                             layers: [coucheIGN, lang],
                                             view: new ol.View({
-                                                projection: proj2154,
-                                                center: [690294.769471, 6206792.476654],
-                                                //center: [320729.77, 5305952.76], //coordonnées en 3857   
-                                                zoom: 9
+                                                // projection: proj2154,
+                                                projection: "EPSG:3857",
+                                                //center: [690294.769471, 6206792.476654], //coord en 2154
+                                                center: [320729.77, 5305952.76], //coordonnées en 3857   
+                                                zoom: 10
                                             })
                                         });
                                         // map.addLayer(lang); //ajout du layer languedoc à la carte
@@ -247,9 +238,9 @@ View conception and test
                                             <option value="Languedoc">Languedoc</option>
                                             <option value="Bugey">Bugey</option>
                                             <option value="Ajaccio">Ajacio</option>
-                                             <option value="Barsac">Barsac</option>
-                                               <option value="Bonnes-Mares">Bonnes-Mares</option>
-                                            
+                                            <option value="Barsac">Barsac</option>
+                                            <option value="Bonnes-Mares">Bonnes-Mares</option>
+
                                         </select>
 
                                     </div>
