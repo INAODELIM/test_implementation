@@ -1,2 +1,12 @@
 **** Problemes rencontrés sur Geoserver****
 
+
+#AFFICHAGE CREATION GRILLE DE TUILAGE, NIVEAU DE ZOOM Décalé
+    . Problème 
+Lors de l'afichage d'une couche WMTS en EPSG 2154, nous avons crée la grille de tuialge 2154 et avons défini des niveaux de zoom, 
+Mais le problème lors de l'affichage est que la couche étaité décalé sauf quand on était au niveau de zoom maximal
+
+    . SOLUTION
+une fois que la grille de tuilage est crée, ces paramètres sont ajouté dans le fichier geowebcache.xml 
+à l'intérieur pour le WMTS, il faut mettre le <alignTopLeft></alignTopLeft> à TRUE
+et mettre  <yCoordinateFirst></yCoordinateFirst> à True également
