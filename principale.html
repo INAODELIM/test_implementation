@@ -22,6 +22,7 @@ View conception and test
         <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
         <link href="assets/css/animate.css" rel="stylesheet">
         <link href="assets/css/style.css" rel="stylesheet">
+        <link href="assets/css/plugins/select2/select2.min.css" rel="stylesheet">
         <!--OpenLayers version 4.6.5 CSS-->
         <link href="assets/css/ol.css" rel="stylesheet">
 
@@ -93,71 +94,96 @@ View conception and test
                                 <script>
                                     function go() {
 
-
+                                        var scaleLineControl = new ol.control.ScaleLine();
+                                        scaleLineControl.setUnits("metric");
                                         var projection = new ol.proj.Projection({
                                             code: 'EPSG:2154',
-                                            extent: [-378305.8099675195, 6008151.219241469, 1320649.5712336518, 7235612.7247730335],
+                                            extent: [-357823.2365, 6037008.6939, 1313632.3628, 7230727.3772],
                                             units: 'm'
                                         }); // definition du EPSG 2154
                                         ol.proj.addProjection(projection); //inclusion du EPSG dans openlayer
-                                        var resolutions = [];
-                                        var matrixIds = [];
                                         var proj2154 = ol.proj.get('EPSG:2154'); //recupération de la projection
-                                        //alert(proj2154.getExtent());
                                         var projectionExtent = proj2154.getExtent(); //recupération de l'étendu de la projection 
-                                        var maxResolution = ol.extent.getWidth(proj2154.getExtent()) / 256; //recupérationd des résolutions
 
-                                        for (var i = 0; i < 15; i++) {
-                                            matrixIds[i] = "EPSG:2154:" + i.toString();
+                                        var variable = 22;
+                                        var resolutions = new Array(variable);
+                                        /* resolutions[0] = 104579.2245498940;
+                                         resolutions[1] = 52277.5323537905;
+                                         resolutions[2] = 26135.4870785954;
+                                         resolutions[3] = 13066.8913818000;
+                                         resolutions[4] = 6533.2286041135;
+                                         resolutions[5] = 3266.5595244627;
+                                         resolutions[6] = 1633.2660045974;
+                                         resolutions[7] = 816.6295549860;*/
+
+                                        var matrixIds = new Array(variable);
+
+                                        //alert(proj2154.getExtent());
+
+                                        //var maxResolution = ol.extent.getWidth(projectionExtent) / 256; //recupérationd des résolutions
+                                        var maxResolution = 104579.224549894;
+                                        //alert(maxResolution);
+
+                                        for (var i = 0; i < variable; ++i) {
+                                            matrixIds[i] = 'EPSG:2154:' + i;
                                             resolutions[i] = (maxResolution) / Math.pow(2, i);
-                                           
+                                            //alert(resolutions[i]);
+
                                         }
-                                       
+
                                         var tileGrid = new ol.tilegrid.WMTS({
                                             origin: ol.extent.getTopLeft(projectionExtent),
-                                          // origin:[-378300, 7235610],
+                                            // origin:[-378300, 7235610],
                                             resolutions: resolutions,
                                             matrixIds: matrixIds
                                         });
-                                        
+
                                         var languedoc_source = new ol.source.WMTS({
-                                            url: 'http://localhost:8080/geoserver/gwc/service/wmts',
+                                            url: 'http://127.0.0.1:8080/geoserver/gwc/service/wmts?REQUEST=getcapabilities',
                                             layer: 'test:languedoc',
                                             matrixSet: 'EPSG:2154',
                                             format: 'image/png',
-                                            projection: "EPSG:2154",
-                                            TILED:true,
+                                            projection: proj2154,
                                             tileGrid: tileGrid,
-                                            style: 'polygon'
+                                            style: 'polygon',
+                                            wrapX: true
+
+
                                         });
                                         var lang = new ol.layer.Tile({
-                                            projection: "EPSG:2154",
-                                            source: languedoc_source,
-                                            transparent: true
+                                            opacity: 0.7,
+                                            source: languedoc_source
+
                                         });
                                         var coucheIGN = new ol.layer.Tile({
                                             source: new ol.source.GeoportalWMTS({
                                                 projection: "EPSG:2154",
-                                                layer: "CADASTRALPARCELS.PARCELS",
-                                                //layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.NIVEAUXGRIS.L93 ",
+                                                // layer: "CADASTRALPARCELS.PARCELS",
+                                                layer: "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.ROUTIER.L93",
                                                 style: "normal",
 
                                             }),
-                                               
+
                                             opacity: 0.8
                                         });
                                         var map = new ol.Map({
-
+                                            controls: ol.control.defaults({
+                                                attributionOptions: {
+                                                    collapsible: false
+                                                }
+                                            }).extend([
+                                                scaleLineControl
+                                            ]),
                                             target: 'map',
-                                            layers: [coucheIGN,lang],
+                                            layers: [coucheIGN, lang],
                                             view: new ol.View({
-                                                projection: "EPSG:3857",
-                                                //center: [690294.769471, 6206792.476654],
-                                                center: [320729.77, 5305952.76], //coordonnées en 3857   
-                                                zoom: 7
+                                                projection: proj2154,
+                                                center: [690294.769471, 6206792.476654],
+                                                //center: [320729.77, 5305952.76], //coordonnées en 3857   
+                                                zoom: 9
                                             })
                                         });
-                                       // map.addLayer(lang); //ajout du layer languedoc à la carte
+                                        // map.addLayer(lang); //ajout du layer languedoc à la carte
                                     }
 
                                     Gp.Services.getConfig({
@@ -213,7 +239,20 @@ View conception and test
                             <div>
 
                                 <div class="sidebar-message">
+                                    <div class="col-md-12">
+                                        <p>
+                                            Select2 also supports multi-value select boxes. The select below is declared with the multiple attribute.
+                                        </p>
+                                        <select class="select2_demo_2 form-control" multiple="multiple">
+                                            <option value="Languedoc">Languedoc</option>
+                                            <option value="Bugey">Bugey</option>
+                                            <option value="Ajaccio">Ajacio</option>
+                                             <option value="Barsac">Barsac</option>
+                                               <option value="Bonnes-Mares">Bonnes-Mares</option>
+                                            
+                                        </select>
 
+                                    </div>
                                 </div>
 
                             </div>
@@ -317,6 +356,15 @@ View conception and test
         <!-- Custom and plugin javascript -->
         <script src="assets/js/inspinia.js"></script>
         <script src="assets/js/plugins/pace/pace.min.js"></script>
+        <!-- Select2 -->
+        <script src="assets/js/plugins/select2/select2.full.min.js"></script>
+
+        <script>
+                                    $(document).ready(function () {
+                                        $(".select2_demo_2").select2();
+                                    });
+        </script>
+
 
         <!--debut form recherche avancée-->
         <div class="modal inmodal" id="myModal4" tabindex="-1" role="dialog"  aria-hidden="true">
