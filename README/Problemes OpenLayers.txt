@@ -1,0 +1,2 @@
+﻿**** Problemes rencontrés sur Openlayers****
+1- carte occupe juste la moitié de l'écran sur mobile
